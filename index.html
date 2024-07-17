@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <nav>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <div class="menu">
+                <button onclick="showScreen('enclos')">Enclos</button>
+                <button onclick="showScreen('ferme')">Ferme</button>
+                <button onclick="showScreen('options')">Options</button>
+                <button onclick="showScreen('capture')">Capture</button>
+            </div>
+        </nav>
+        <main id="screen">
+            <section id="enclos" class="screen active">Content for Enclos</section>
+            <section id="ferme" class="screen">Content for Ferme</section>
+            <section id="options" class="screen">Content for Options</section>
+            <section id="capture" class="screen">Content for Capture</section>
+        </main>
+        <div id="left-arrow" class="arrow" onclick="prevScreen()">&#9664;</div>
+        <div id="right-arrow" class="arrow" onclick="nextScreen()">&#9654;</div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

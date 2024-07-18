@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monster Game</title>
+    <title>Monster Keeper</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,7 +18,15 @@
             </div>
         </nav>
         <main id="screen">
-            <section id="enclos" class="screen active">Content for Enclos</section>
+            <section id="enclos" class="screen active">
+                <div class="enclos-container">
+                    <div class="enclos" id="enclos-1"></div>
+                    <div class="enclos" id="enclos-2"></div>
+                    <div class="enclos" id="enclos-3"></div>
+                    <div class="enclos" id="enclos-4"></div>
+                </div>
+                <button onclick="switchLandscape()">Change Landscape</button>
+            </section>
             <section id="ferme" class="screen">Content for Ferme</section>
             <section id="options" class="screen">Content for Options</section>
             <section id="capture" class="screen">Content for Capture</section>

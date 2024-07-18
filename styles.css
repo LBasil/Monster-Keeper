@@ -53,7 +53,6 @@ nav .menu button:hover {
 #screen {
     flex: 1;
     padding: 1em;
-    overflow-y: auto;
     display: flex;
     transition: transform 0.3s ease;
 }
@@ -71,6 +70,39 @@ nav .menu button:hover {
 
 .screen.active {
     display: flex;
+}
+
+.enclos-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1em;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.enclos {
+    width: 100%;
+    padding-bottom: 100%; /* Aspect ratio 1:1 */
+    background-color: #e0e0e0;
+    border: 2px solid #ccc;
+    position: relative;
+    margin: 5%;
+}
+
+.enclos::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%; /* Maintain aspect ratio */
+}
+
+#enclos button {
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    background-color: #444;
+    color: white;
+    border: none;
 }
 
 .arrow {
@@ -91,6 +123,39 @@ nav .menu button:hover {
 
 #right-arrow {
     right: 10px;
+}
+
+/* Styles pour différents paysages */
+.landscape-1 {
+    background-image: url('images/landscape1.png');
+    background-size: cover;
+}
+
+.landscape-2 {
+    background-image: url('images/landscape2.png');
+    background-size: cover;
+}
+
+.landscape-3 {
+    background-image: url('images/landscape3.png');
+    background-size: cover;
+}
+
+/* Styles pour les différents états des enclos */
+.enclos.empty {
+    background-color: #e0e0e0;
+}
+
+.enclos.non-existing {
+    background-color: #a0a0a0;
+}
+
+.enclos.in-construction {
+    background-color: #ffd700;
+}
+
+.enclos.occupied {
+    background-color: #90ee90;
 }
 
 /* Responsivité */
@@ -116,6 +181,7 @@ nav .menu button:hover {
 
     nav .menu.active {
         display: flex;
+        z-index: 99999;
     }
 
     nav .menu button {

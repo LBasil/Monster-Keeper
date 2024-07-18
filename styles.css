@@ -1,3 +1,4 @@
+/* Vos styles personnalisés */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -12,54 +13,7 @@ body {
     position: relative;
 }
 
-nav {
-    background-color: #333;
-    padding: 1em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-nav .menu-toggle {
-    display: none;
-    background-color: #444;
-    color: white;
-    border: none;
-    padding: 0.5em;
-    cursor: pointer;
-    font-size: 1.5em;
-}
-
-nav .menu {
-    display: flex;
-    justify-content: space-around;
-    flex-grow: 1;
-}
-
-nav .menu button {
-    background-color: #444;
-    color: white;
-    border: none;
-    padding: 0.5em 1em;
-    cursor: pointer;
-    margin: 0 0.5em;
-    font-size: 1em;
-}
-
-nav .menu button:hover {
-    background-color: #555;
-}
-
-#screen {
-    flex: 1;
-    padding: 1em;
-    display: flex;
-    transition: transform 0.3s ease;
-}
-
 .screen {
-    flex: 1;
-    min-width: 100%;
     display: none;
     justify-content: center;
     align-items: center;
@@ -82,55 +36,39 @@ nav .menu button:hover {
 }
 
 .enclos, .field {
+    position: relative;
     width: 100%;
     padding-bottom: 100%; /* Aspect ratio 1:1 */
     background-color: #e0e0e0;
     border: 2px solid #ccc;
-    position: relative;
     margin: 5%;
 }
 
-.enclos::after, .field::after {
-    content: "";
-    display: block;
-    padding-bottom: 100%; /* Maintain aspect ratio */
+.enclos.empty, .field.empty {
+    background-color: #e0e0e0;
 }
 
-.landscape-button {
-    margin-top: 1em;
-    padding: 0.5em 1em;
-    cursor: pointer;
-    background-color: #444;
-    color: white;
-    border: none;
-    font-size: 1em;
+.enclos.non-existing, .field.non-constructed {
+    background-color: #a0a0a0;
 }
 
-.landscape-button:hover {
-    background-color: #555;
+.enclos.in-construction, .field.in-construction {
+    background-color: #ffd700;
 }
 
-.arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2em;
-    color: #444;
-    cursor: pointer;
-    padding: 0.5em;
-    background-color: rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
+.enclos.occupied {
+    background-color: #90ee90;
 }
 
-#left-arrow {
-    left: 10px;
+.field.seed {
+    background-color: #90ee90;
 }
 
-#right-arrow {
-    right: 10px;
+.field.growing-1, .field.growing-2, .field.growing-3,
+.field.growing-4, .field.growing-5, .field.growing-6, .field.growing-7 {
+    background-color: #32CD32;
 }
 
-/* Styles for different landscapes */
 .landscape-1 {
     background-image: url('images/landscape1.png');
     background-size: cover;
@@ -146,119 +84,57 @@ nav .menu button:hover {
     background-size: cover;
 }
 
-/* Styles for different enclosure states */
-.enclos.empty {
-    background-color: #e0e0e0;
+.progress-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
 }
 
-.enclos.non-existing {
-    background-color: #a0a0a0;
+.progress-circle svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
 }
 
-.enclos.in-construction {
-    background-color: #ffd700;
+.progress-circle circle {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
 }
 
-.enclos.occupied {
-    background-color: #90ee90;
+.progress-circle .bg {
+    stroke: #d6d6d6;
 }
 
-/* Styles for different field states */
-.field.non-constructed {
-    background-color: #a0a0a0;
+.progress-circle .progress {
+    stroke: #4caf50;
+    stroke-dasharray: 314; /* 2 * PI * R */
+    stroke-dashoffset: 314;
 }
 
-.field.empty {
-    background-color: #e0e0e0;
-}
-
-.field.seed {
-    background-color: #90ee90;
-}
-
-.field.growing-1 {
-    background-color: #add8e6;
-}
-
-.field.growing-2 {
-    background-color: #87cefa;
-}
-
-.field.growing-3 {
-    background-color: #4682b4;
-}
-
-.field.growing-4 {
-    background-color: #4169e1;
-}
-
-.field.growing-5 {
-    background-color: #0000ff;
-}
-
-.field.growing-6 {
-    background-color: #0000cd;
-}
-
-.field.growing-7 {
-    background-color: #00008b;
-}
-
-/* Responsiveness */
 @media (max-width: 768px) {
-    nav {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    nav .menu-toggle {
-        display: block;
-    }
-
-    nav .menu {
-        flex-direction: column;
-        display: none;
-        position: absolute;
-        top: 60px; /* Position the menu just below the navbar */
-        left: 0;
-        width: 100%;
-        background-color: #333;
-    }
-
-    nav .menu.active {
-        display: flex;
-    }
-
-    nav .menu button {
-        margin: 0.5em 0;
-        padding: 0.5em;
-        font-size: 1.2em;
-    }
-
-    .arrow {
-        font-size: 1.5em;
-        padding: 0.3em;
-    }
-
     .screen {
         font-size: 1em;
         padding: 1em;
     }
+
+    .progress-circle {
+        width: 90%;
+        height: 90%;
+    }
 }
 
 @media (max-width: 480px) {
-    nav .menu button {
-        font-size: 1em;
-        padding: 0.3em;
-    }
-
-    .arrow {
-        font-size: 1.2em;
-        padding: 0.2em;
-    }
-
     .screen {
         font-size: 0.8em;
         padding: 0.5em;
+    }
+
+    .progress-circle {
+        width: 95%;
+        height: 95%;
     }
 }

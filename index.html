@@ -4,44 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monster Keeper</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="app">
-        <nav>
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-            <div class="menu">
-                <button onclick="showScreen('enclos')">Enclos</button>
-                <button onclick="showScreen('ferme')">Ferme</button>
-                <button onclick="showScreen('options')">Options</button>
-                <button onclick="showScreen('capture')">Capture</button>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link" onclick="showScreen('enclos')">Enclos</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link" onclick="showScreen('ferme')">Ferme</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link" onclick="showScreen('options')">Options</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link" onclick="showScreen('capture')">Capture</button>
+                    </li>
+                </ul>
             </div>
+            <button class="btn btn-outline-light" onclick="switchLandscape()">Change Landscape</button>
         </nav>
-        <main id="screen">
-            <section id="enclos" class="screen active">
+        <div id="screen" class="flex-fill">
+            <div id="enclos" class="screen active landscape-1">
                 <div class="enclos-container">
-                    <div class="enclos" id="enclos-1"></div>
-                    <div class="enclos" id="enclos-2"></div>
-                    <div class="enclos" id="enclos-3"></div>
-                    <div class="enclos" id="enclos-4"></div>
+                    <div id="enclos-1" class="enclos"></div>
+                    <div id="enclos-2" class="enclos"></div>
+                    <div id="enclos-3" class="enclos"></div>
+                    <div id="enclos-4" class="enclos"></div>
                 </div>
-                <button onclick="switchLandscape()">Change Landscape</button>
-            </section>
-            <section id="ferme" class="screen">
+            </div>
+            <div id="ferme" class="screen landscape-1">
                 <div class="field-container">
-                    <div class="field" id="field-1"></div>
-                    <div class="field" id="field-2"></div>
-                    <div class="field" id="field-3"></div>
-                    <div class="field" id="field-4"></div>
+                    <div id="field-1" class="field"></div>
+                    <div id="field-2" class="field"></div>
+                    <div id="field-3" class="field"></div>
+                    <div id="field-4" class="field"></div>
                 </div>
-                <button onclick="switchLandscape()">Change Landscape</button>
-            </section>
-            <section id="options" class="screen">Content for Options</section>
-            <section id="capture" class="screen">Content for Capture</section>
-        </main>
-        <div id="left-arrow" class="arrow" onclick="prevScreen()">&#9664;</div>
-        <div id="right-arrow" class="arrow" onclick="nextScreen()">&#9654;</div>
+            </div>
+            <div id="options" class="screen landscape-1">Options Content</div>
+            <div id="capture" class="screen landscape-1">Capture Content</div>
+        </div>
+        <button id="left-arrow" class="arrow" onclick="prevScreen()">&lt;</button>
+        <button id="right-arrow" class="arrow" onclick="nextScreen()">&gt;</button>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>

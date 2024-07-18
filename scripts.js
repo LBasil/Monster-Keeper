@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     showScreen('enclos');
+    setEnclosState('enclos-1', 'in-construction');
     switchLandscape();
-    loadFieldStates();
-    updateEnclosures();
-    updateFields();
 });
 
 const screens = ['enclos', 'ferme', 'options', 'capture'];
 let currentScreenIndex = 0;
-let currentLandscapeIndex = -1;
+let currentLandscapeIndex = -1; // So with +1 we get 0
 
 const landscapes = ['landscape-1', 'landscape-2', 'landscape-3'];
 
@@ -26,28 +24,28 @@ const enclosureStates = {
         'enclos-4': 'occupied'
     },
     'landscape-3': {
-        'enclos-1': 'occupied',
-        'enclos-2': 'non-existing',
-        'enclos-3': 'empty',
+        'enclos-1': 'non-existing',
+        'enclos-2': 'empty',
+        'enclos-3': 'occupied',
         'enclos-4': 'in-construction'
     }
 };
 
 const fieldStates = {
     'landscape-1': {
-        'field-1': 'non-constructed',
-        'field-2': 'empty',
-        'field-3': 'seed',
-        'field-4': 'growing-3'
-    },
-    'landscape-2': {
         'field-1': 'empty',
         'field-2': 'non-constructed',
-        'field-3': 'growing-5',
-        'field-4': 'seed'
+        'field-3': 'growing-1',
+        'field-4': 'growing-2'
+    },
+    'landscape-2': {
+        'field-1': 'non-constructed',
+        'field-2': 'empty',
+        'field-3': 'growing-3',
+        'field-4': 'growing-7'
     },
     'landscape-3': {
-        'field-1': 'growing-7',
+        'field-1': 'growing-1',
         'field-2': 'non-constructed',
         'field-3': 'empty',
         'field-4': 'growing-2'
@@ -64,7 +62,6 @@ function showScreen(screenId) {
         }
     });
     currentScreenIndex = screens.indexOf(screenId);
-    closeMenu();
 }
 
 function prevScreen() {
@@ -77,23 +74,13 @@ function nextScreen() {
     showScreen(screens[currentScreenIndex]);
 }
 
-function toggleMenu() {
-    const menu = document.querySelector('nav .menu');
-    menu.classList.toggle('active');
-}
-
-function closeMenu() {
-    const menu = document.querySelector('nav .menu');
-    menu.classList.remove('active');
-}
-
 function switchLandscape() {
-    const currentScreen = screens[currentScreenIndex]; // Get current screen before switching landscape
+    const currentScreen = screens[currentScreenIndex];
     currentLandscapeIndex = (currentLandscapeIndex + 1) % landscapes.length;
     updateLandscapes();
     updateEnclosures();
     updateFields();
-    showScreen(currentScreen); // Restore the current screen after switching landscape
+    showScreen(currentScreen);
 }
 
 function updateLandscapes() {
@@ -132,6 +119,46 @@ function setFieldState(fieldId, state) {
     const field = document.getElementById(fieldId);
     field.className = 'field ' + state;
     field.onclick = () => handleFieldClick(fieldId);
+
+    // Supprimez les cercles de progression existants
+    const existingProgressCircle = field.querySelector('.progress-circle');
+    if (existingProgressCircle) {
+        existingProgressCircle.remove();
+    }
+
+    if (state.startsWith('growing-')) {
+        const progressCircle = document.createElement('div');
+        progressCircle.className = 'progress-circle';
+
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const bgCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        const progressCirclePath = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+
+        bgCircle.setAttribute("cx", "50%");
+        bgCircle.setAttribute("cy", "50%");
+        bgCircle.setAttribute("r", "45%");
+        bgCircle.setAttribute("class", "bg");
+
+        progressCirclePath.setAttribute("cx", "50%");
+        progressCirclePath.setAttribute("cy", "50%");
+        progressCirclePath.setAttribute("r", "45%");
+        progressCirclePath.setAttribute("class", "progress");
+
+        svg.appendChild(bgCircle);
+        svg.appendChild(progressCirclePath);
+        progressCircle.appendChild(svg);
+
+        field.appendChild(progressCircle);
+
+        // Ajoutez le remplissage de progression en fonction du stade de croissance actuel
+        const growthStage = parseInt(state.split('-')[1]);
+        updateProgressCircle(progressCirclePath, growthStage);
+    }
+}
+
+function updateProgressCircle(circle, growthStage) {
+    const progress = (growthStage / 7) * 314; // Calcule la progression basée sur le stade de croissance
+    circle.style.strokeDashoffset = 314 - progress; // Applique le décalage de progression
 }
 
 function handleFieldClick(fieldId) {
@@ -165,10 +192,16 @@ function plantSeed(fieldId) {
 
 function startGrowthCycle(fieldId) {
     let growthStage = 1;
+    const field = document.getElementById(fieldId);
+    const progressCircle = field.querySelector('.progress');
+
     const growInterval = setInterval(() => {
         if (growthStage < 7) {
             growthStage++;
             setFieldState(fieldId, `growing-${growthStage}`);
+            if (progressCircle) {
+                updateProgressCircle(progressCircle, growthStage);
+            }
         } else {
             clearInterval(growInterval);
         }
@@ -231,8 +264,6 @@ function loadFieldStates() {
             fieldStates[landscape] = updatedStates;
         }
     });
-
-    updateFields();
 }
 
 window.addEventListener('beforeunload', saveFieldStates);

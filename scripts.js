@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+    loadFromLocalStorage();
     showScreen('enclos');
-    setEnclosState('enclos-1', 'in-construction');
-    switchLandscape();
+    setInterval(updateFieldsState, 10000); // Update fields state every 10 seconds
 });
 
 const screens = ['enclos', 'ferme', 'options', 'capture'];
 let currentScreenIndex = 0;
-let currentLandscapeIndex = -1; // So with +1 we get 0
+let currentLandscapeIndex = 0;
 
 const landscapes = ['landscape-1', 'landscape-2', 'landscape-3'];
 
@@ -36,32 +36,32 @@ const fieldStates = {
         'field-1': 'empty',
         'field-2': 'non-constructed',
         'field-3': 'growing-1',
-        'field-4': 'growing-2'
+        'field-4': 'seed'
     },
     'landscape-2': {
-        'field-1': 'non-constructed',
-        'field-2': 'empty',
-        'field-3': 'growing-3',
-        'field-4': 'growing-7'
+        'field-1': 'seed',
+        'field-2': 'growing-2',
+        'field-3': 'non-constructed',
+        'field-4': 'empty'
     },
     'landscape-3': {
-        'field-1': 'growing-1',
-        'field-2': 'non-constructed',
+        'field-1': 'growing-3',
+        'field-2': 'seed',
         'field-3': 'empty',
-        'field-4': 'growing-2'
+        'field-4': 'non-constructed'
     }
 };
 
-function showScreen(screenId) {
-    const screenElements = document.querySelectorAll('.screen');
-    screenElements.forEach(screen => {
-        if (screen.id === screenId) {
-            screen.classList.add('active');
-        } else {
-            screen.classList.remove('active');
-        }
+let inventory = {
+    'wheatSeeds': 5,
+    'wheat': 0
+};
+
+function showScreen(screen) {
+    screens.forEach(s => {
+        document.getElementById(s).classList.remove('active');
     });
-    currentScreenIndex = screens.indexOf(screenId);
+    document.getElementById(screen).classList.add('active');
 }
 
 function prevScreen() {
@@ -75,196 +75,180 @@ function nextScreen() {
 }
 
 function switchLandscape() {
-    const currentScreen = screens[currentScreenIndex];
     currentLandscapeIndex = (currentLandscapeIndex + 1) % landscapes.length;
-    updateLandscapes();
-    updateEnclosures();
-    updateFields();
-    showScreen(currentScreen);
-}
-
-function updateLandscapes() {
-    const activeLandscape = landscapes[currentLandscapeIndex];
+    const landscape = landscapes[currentLandscapeIndex];
     const screenElements = document.querySelectorAll('.screen');
+
     screenElements.forEach(screen => {
-        screen.classList.remove(...landscapes);
-        screen.classList.add(activeLandscape);
+        landscapes.forEach(ls => {
+            screen.classList.remove(ls);
+        });
+        screen.classList.add(landscape);
     });
-}
 
-function updateEnclosures() {
-    const currentLandscape = landscapes[currentLandscapeIndex];
-    const currentStates = enclosureStates[currentLandscape];
+    const currentEnclosures = enclosureStates[landscape];
+    for (let enclos in currentEnclosures) {
+        setEnclosState(enclos, currentEnclosures[enclos]);
+    }
 
-    Object.keys(currentStates).forEach(enclosId => {
-        setEnclosState(enclosId, currentStates[enclosId]);
-    });
-}
-
-function updateFields() {
-    const currentLandscape = landscapes[currentLandscapeIndex];
-    const currentStates = fieldStates[currentLandscape];
-
-    Object.keys(currentStates).forEach(fieldId => {
-        setFieldState(fieldId, currentStates[fieldId]);
-    });
+    const currentFields = fieldStates[landscape];
+    for (let field in currentFields) {
+        setFieldState(field, currentFields[field]);
+    }
+    saveToLocalStorage();
 }
 
 function setEnclosState(enclosId, state) {
-    const enclos = document.getElementById(enclosId);
-    enclos.className = 'enclos ' + state;
+    const enclosElement = document.getElementById(enclosId);
+    if (enclosElement) {
+        enclosElement.className = 'enclos ' + state;
+        enclosElement.textContent = state === 'non-existing' ? '-2' : state === 'in-construction' ? '-1' : state === 'empty' ? '0' : '1';
+    }
 }
 
 function setFieldState(fieldId, state) {
-    const field = document.getElementById(fieldId);
-    field.className = 'field ' + state;
-    field.onclick = () => handleFieldClick(fieldId);
-
-    // Supprimez les cercles de progression existants
-    const existingProgressCircle = field.querySelector('.progress-circle');
-    if (existingProgressCircle) {
-        existingProgressCircle.remove();
-    }
-
-    if (state.startsWith('growing-')) {
-        const progressCircle = document.createElement('div');
-        progressCircle.className = 'progress-circle';
-
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        const bgCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        const progressCirclePath = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-
-        bgCircle.setAttribute("cx", "50%");
-        bgCircle.setAttribute("cy", "50%");
-        bgCircle.setAttribute("r", "45%");
-        bgCircle.setAttribute("class", "bg");
-
-        progressCirclePath.setAttribute("cx", "50%");
-        progressCirclePath.setAttribute("cy", "50%");
-        progressCirclePath.setAttribute("r", "45%");
-        progressCirclePath.setAttribute("class", "progress");
-
-        svg.appendChild(bgCircle);
-        svg.appendChild(progressCirclePath);
-        progressCircle.appendChild(svg);
-
-        field.appendChild(progressCircle);
-
-        // Ajoutez le remplissage de progression en fonction du stade de croissance actuel
-        const growthStage = parseInt(state.split('-')[1]);
-        updateProgressCircle(progressCirclePath, growthStage);
+    const fieldElement = document.getElementById(fieldId);
+    if (fieldElement) {
+        fieldElement.className = 'field ' + state;
+        fieldElement.textContent = state === 'non-constructed' ? '-2' : state === 'in-construction' ? '-1' : state === 'empty' ? '0' : state.includes('growing') ? state.split('-')[1] : '1';
+        if (state === 'in-construction') {
+            updateFieldProgress(fieldId, 20); // Update progress bar for in-construction state
+        }
     }
 }
 
-function updateProgressCircle(circle, growthStage) {
-    const progress = (growthStage / 7) * 314; // Calcule la progression basée sur le stade de croissance
-    circle.style.strokeDashoffset = 314 - progress; // Applique le décalage de progression
+function alertEnclosState(enclosId) {
+    const enclosElement = document.getElementById(enclosId);
+    if (enclosElement) {
+        alert(`L'état de ${enclosId} est : ${enclosElement.className.split(' ')[1]}`);
+    }
+}
+
+function alertFieldState(fieldId) {
+    const fieldElement = document.getElementById(fieldId);
+    if (fieldElement) {
+        alert(`L'état de ${fieldId} est : ${fieldElement.className.split(' ')[1]}`);
+    }
+}
+
+function updateFieldProgress(fieldId, duration) {
+    const fieldElement = document.getElementById(fieldId);
+    const progressBar = fieldElement.querySelector('.progress-bar');
+    if (progressBar) {
+        progressBar.style.height = '0%';
+        setTimeout(() => {
+            progressBar.style.height = '100%';
+        }, 100); // Small delay to trigger CSS transition
+        setTimeout(() => {
+            fieldElement.className = 'field seed'; // Change state to seed after duration
+            fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'seed'; // Update state in fieldStates
+            saveToLocalStorage();
+        }, duration * 1000);
+    }
+}
+
+function saveToLocalStorage() {
+    const currentLandscape = landscapes[currentLandscapeIndex];
+    const currentEnclosures = enclosureStates[currentLandscape];
+    const currentFields = fieldStates[currentLandscape];
+
+    localStorage.setItem('currentScreenIndex', currentScreenIndex);
+    localStorage.setItem('currentLandscapeIndex', currentLandscapeIndex);
+    localStorage.setItem('enclosureStates', JSON.stringify(enclosureStates));
+    localStorage.setItem('fieldStates', JSON.stringify(fieldStates));
+    localStorage.setItem('inventory', JSON.stringify(inventory));
+}
+
+function loadFromLocalStorage() {
+    if (localStorage.getItem('currentScreenIndex') !== null) {
+        currentScreenIndex = parseInt(localStorage.getItem('currentScreenIndex'), 10);
+    }
+    if (localStorage.getItem('currentLandscapeIndex') !== null) {
+        currentLandscapeIndex = parseInt(localStorage.getItem('currentLandscapeIndex'), 10);
+    }
+    if (localStorage.getItem('enclosureStates') !== null) {
+        Object.assign(enclosureStates, JSON.parse(localStorage.getItem('enclosureStates')));
+    }
+    if (localStorage.getItem('fieldStates') !== null) {
+        Object.assign(fieldStates, JSON.parse(localStorage.getItem('fieldStates')));
+    }
+    if (localStorage.getItem('inventory') !== null) {
+        inventory = JSON.parse(localStorage.getItem('inventory'));
+    }
+
+    const currentLandscape = landscapes[currentLandscapeIndex];
+    if (currentLandscape) {
+        const screenElements = document.querySelectorAll('.screen');
+        screenElements.forEach(screen => {
+            landscapes.forEach(ls => {
+                screen.classList.remove(ls);
+            });
+            screen.classList.add(currentLandscape);
+        });
+
+        const currentEnclosures = enclosureStates[currentLandscape];
+        for (let enclos in currentEnclosures) {
+            setEnclosState(enclos, currentEnclosures[enclos]);
+        }
+
+        const currentFields = fieldStates[currentLandscape];
+        for (let field in currentFields) {
+            setFieldState(field, currentFields[field]);
+        }
+    }
+
+    showScreen(screens[currentScreenIndex]);
 }
 
 function handleFieldClick(fieldId) {
-    const field = document.getElementById(fieldId);
-    const state = field.className.split(' ')[1];
-
-    if (state === 'empty' && hasSeeds()) {
-        plantSeed(fieldId);
-    } else if (state.startsWith('growing-') && state !== 'growing-7') {
-        alert(`Field state: ${state}`);
-    } else if (state === 'growing-7') {
+    const fieldElement = document.getElementById(fieldId);
+    const state = fieldElement.className.split(' ')[1];
+    if (state === 'growing-7') {
         harvestField(fieldId);
-    }
-}
-
-function hasSeeds() {
-    const seeds = localStorage.getItem('seeds');
-    return seeds && parseInt(seeds) > 0;
-}
-
-function plantSeed(fieldId) {
-    const seeds = parseInt(localStorage.getItem('seeds'));
-    if (seeds > 0) {
-        localStorage.setItem('seeds', seeds - 1);
-        setFieldState(fieldId, 'growing-1');
-        startGrowthCycle(fieldId);
-    } else {
-        alert('No seeds available');
-    }
-}
-
-function startGrowthCycle(fieldId) {
-    let growthStage = 1;
-    const field = document.getElementById(fieldId);
-    const progressCircle = field.querySelector('.progress');
-
-    const growInterval = setInterval(() => {
-        if (growthStage < 7) {
-            growthStage++;
-            setFieldState(fieldId, `growing-${growthStage}`);
-            if (progressCircle) {
-                updateProgressCircle(progressCircle, growthStage);
-            }
+    } else if (state === 'empty') {
+        if (inventory.wheatSeeds > 0) {
+            inventory.wheatSeeds--;
+            plantField(fieldId);
+            alert('Vous avez planté une graine de blé.');
         } else {
-            clearInterval(growInterval);
+            alertFieldState(fieldId);
         }
-    }, 30000);
+    } else {
+        alertFieldState(fieldId);
+    }
 }
 
 function harvestField(fieldId) {
-    const wheat = parseInt(localStorage.getItem('wheat')) || 0;
-    const seeds = parseInt(localStorage.getItem('seeds')) || 0;
-    const harvestedWheat = getRandomInt(1, 5);
-    const harvestedSeeds = getRandomInt(1, 3);
-
-    localStorage.setItem('wheat', wheat + harvestedWheat);
-    localStorage.setItem('seeds', seeds + harvestedSeeds);
+    const wheatAmount = Math.floor(Math.random() * 5) + 1; // 1 to 5 wheat
+    const seedAmount = Math.floor(Math.random() * 3) + 1; // 1 to 3 seeds
+    inventory.wheat += wheatAmount;
+    inventory.wheatSeeds += seedAmount;
+    fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'empty'; // Set field state to empty after harvesting
     setFieldState(fieldId, 'empty');
-
-    alert(`Vous avez récolté ${harvestedWheat} blé(s) et ${harvestedSeeds} graine(s). Maintenant, le champ est vide.`);
+    saveToLocalStorage();
+    alert(`Vous avez récolté ${wheatAmount} blé(s) et ${seedAmount} graine(s) de blé.`);
 }
 
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function plantField(fieldId) {
+    fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'growing-1'; // Set field state to in-construction when planting
+    setFieldState(fieldId, 'growing-1');
+    saveToLocalStorage();
 }
 
-function saveFieldStates() {
+function updateFieldsState() {
     const currentLandscape = landscapes[currentLandscapeIndex];
-    const currentStates = fieldStates[currentLandscape];
-    const timestamp = new Date().getTime();
+    const currentFields = fieldStates[currentLandscape];
 
-    const data = {
-        timestamp: timestamp,
-        states: currentStates
-    };
-
-    localStorage.setItem('fieldStates_' + currentLandscape, JSON.stringify(data));
-}
-
-function loadFieldStates() {
-    landscapes.forEach(landscape => {
-        const data = JSON.parse(localStorage.getItem('fieldStates_' + landscape));
-        if (data) {
-            const timeElapsed = new Date().getTime() - data.timestamp;
-            const updatedStates = {};
-
-            Object.keys(data.states).forEach(fieldId => {
-                let state = data.states[fieldId];
-                if (state.startsWith('growing-')) {
-                    const growthStage = parseInt(state.split('-')[1]);
-                    const newGrowthStage = growthStage + Math.floor(timeElapsed / 30000); // 30 seconds per stage
-
-                    if (newGrowthStage > 7) {
-                        updatedStates[fieldId] = 'growing-7';
-                    } else {
-                        updatedStates[fieldId] = 'growing-' + newGrowthStage;
-                    }
-                } else {
-                    updatedStates[fieldId] = state;
-                }
-            });
-
-            fieldStates[landscape] = updatedStates;
+    for (let field in currentFields) {
+        let state = currentFields[field];
+        if (state.startsWith('growing-')) {
+            let level = parseInt(state.split('-')[1]);
+            if (level < 7) {
+                level++;
+                currentFields[field] = `growing-${level}`;
+                setFieldState(field, `growing-${level}`);
+            }
         }
-    });
+    }
+    saveToLocalStorage();
 }
-
-window.addEventListener('beforeunload', saveFieldStates);
-document.addEventListener('DOMContentLoaded', loadFieldStates);

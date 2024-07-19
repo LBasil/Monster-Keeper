@@ -34,18 +34,26 @@
         <div id="screen" class="flex-fill">
             <div id="enclos" class="screen active landscape-1">
                 <div class="enclos-container">
-                    <div id="enclos-1" class="enclos"></div>
-                    <div id="enclos-2" class="enclos"></div>
-                    <div id="enclos-3" class="enclos"></div>
-                    <div id="enclos-4" class="enclos"></div>
+                    <div id="enclos-1" class="enclos" onclick="alertEnclosState('enclos-1')"></div>
+                    <div id="enclos-2" class="enclos" onclick="alertEnclosState('enclos-2')"></div>
+                    <div id="enclos-3" class="enclos" onclick="alertEnclosState('enclos-3')"></div>
+                    <div id="enclos-4" class="enclos" onclick="alertEnclosState('enclos-4')"></div>
                 </div>
             </div>
             <div id="ferme" class="screen landscape-1">
                 <div class="field-container">
-                    <div id="field-1" class="field"></div>
-                    <div id="field-2" class="field"></div>
-                    <div id="field-3" class="field"></div>
-                    <div id="field-4" class="field"></div>
+                    <div id="field-1" class="field" onclick="handleFieldClick('field-1')">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div id="field-2" class="field" onclick="handleFieldClick('field-2')">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div id="field-3" class="field" onclick="handleFieldClick('field-3')">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div id="field-4" class="field" onclick="handleFieldClick('field-4')">
+                        <div class="progress-bar"></div>
+                    </div>
                 </div>
             </div>
             <div id="options" class="screen landscape-1">Options Content</div>

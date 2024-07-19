@@ -1,4 +1,3 @@
-/* Vos styles personnalisés */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -42,6 +41,11 @@ body {
     background-color: #e0e0e0;
     border: 2px solid #ccc;
     margin: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    font-weight: bold;
 }
 
 .enclos.empty, .field.empty {
@@ -64,10 +68,13 @@ body {
     background-color: #90ee90;
 }
 
-.field.growing-1, .field.growing-2, .field.growing-3,
-.field.growing-4, .field.growing-5, .field.growing-6, .field.growing-7 {
-    background-color: #32CD32;
-}
+.field.growing-1 { background-color: #32CD32; }
+.field.growing-2 { background-color: #28a745; }
+.field.growing-3 { background-color: #218838; }
+.field.growing-4 { background-color: #1e7e34; }
+.field.growing-5 { background-color: #19692c; }
+.field.growing-6 { background-color: #155724; }
+.field.growing-7 { background-color: #0c2d11; }
 
 .landscape-1 {
     background-image: url('images/landscape1.png');
@@ -84,35 +91,14 @@ body {
     background-size: cover;
 }
 
-.progress-circle {
+.progress-bar {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
-}
-
-.progress-circle svg {
+    bottom: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-}
-
-.progress-circle circle {
-    fill: none;
-    stroke-width: 10;
-    stroke-linecap: round;
-}
-
-.progress-circle .bg {
-    stroke: #d6d6d6;
-}
-
-.progress-circle .progress {
-    stroke: #4caf50;
-    stroke-dasharray: 314; /* 2 * PI * R */
-    stroke-dashoffset: 314;
+    height: 0;
+    background-color: #4caf50;
+    transition: height 20s linear;
 }
 
 @media (max-width: 768px) {
@@ -120,21 +106,11 @@ body {
         font-size: 1em;
         padding: 1em;
     }
-
-    .progress-circle {
-        width: 90%;
-        height: 90%;
-    }
 }
 
 @media (max-width: 480px) {
     .screen {
         font-size: 0.8em;
         padding: 0.5em;
-    }
-
-    .progress-circle {
-        width: 95%;
-        height: 95%;
     }
 }

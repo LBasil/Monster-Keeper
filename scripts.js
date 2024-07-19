@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     loadFromLocalStorage();
     showScreen('enclos');
+    updateAllFieldsState();
     setInterval(updateFieldsState, 10000); // Update fields state every 10 seconds
 });
 
@@ -95,6 +96,7 @@ function switchLandscape() {
     for (let field in currentFields) {
         setFieldState(field, currentFields[field]);
     }
+    updateAllFieldsState();
     saveToLocalStorage();
 }
 
@@ -111,9 +113,6 @@ function setFieldState(fieldId, state) {
     if (fieldElement) {
         fieldElement.className = 'field ' + state;
         fieldElement.textContent = state === 'non-constructed' ? '-2' : state === 'in-construction' ? '-1' : state === 'empty' ? '0' : state.includes('growing') ? state.split('-')[1] : '1';
-        if (state === 'in-construction') {
-            updateFieldProgress(fieldId, 20); // Update progress bar for in-construction state
-        }
     }
 }
 
@@ -131,22 +130,6 @@ function alertFieldState(fieldId) {
     }
 }
 
-function updateFieldProgress(fieldId, duration) {
-    const fieldElement = document.getElementById(fieldId);
-    const progressBar = fieldElement.querySelector('.progress-bar');
-    if (progressBar) {
-        progressBar.style.height = '0%';
-        setTimeout(() => {
-            progressBar.style.height = '100%';
-        }, 100); // Small delay to trigger CSS transition
-        setTimeout(() => {
-            fieldElement.className = 'field seed'; // Change state to seed after duration
-            fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'seed'; // Update state in fieldStates
-            saveToLocalStorage();
-        }, duration * 1000);
-    }
-}
-
 function saveToLocalStorage() {
     const currentLandscape = landscapes[currentLandscapeIndex];
     const currentEnclosures = enclosureStates[currentLandscape];
@@ -157,6 +140,7 @@ function saveToLocalStorage() {
     localStorage.setItem('enclosureStates', JSON.stringify(enclosureStates));
     localStorage.setItem('fieldStates', JSON.stringify(fieldStates));
     localStorage.setItem('inventory', JSON.stringify(inventory));
+    localStorage.setItem('lastUpdate', new Date().getTime());
 }
 
 function loadFromLocalStorage() {
@@ -230,7 +214,7 @@ function harvestField(fieldId) {
 }
 
 function plantField(fieldId) {
-    fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'growing-1'; // Set field state to in-construction when planting
+    fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'growing-1'; // Set field state to growing-1 when planting
     setFieldState(fieldId, 'growing-1');
     saveToLocalStorage();
 }
@@ -251,4 +235,29 @@ function updateFieldsState() {
         }
     }
     saveToLocalStorage();
+}
+
+function updateAllFieldsState() {
+    const lastUpdate = localStorage.getItem('lastUpdate');
+    if (lastUpdate) {
+        const currentTime = new Date().getTime();
+        const timeDifference = currentTime - lastUpdate; // Time difference in milliseconds
+        const stateUpdates = Math.floor(timeDifference / 10000); // Number of 10-second intervals passed
+
+        if (stateUpdates > 0) {
+            for (let landscape in fieldStates) {
+                const fields = fieldStates[landscape];
+                for (let field in fields) {
+                    let state = fields[field];
+                    if (state.startsWith('growing-')) {
+                        let level = parseInt(state.split('-')[1]);
+                        level = Math.min(level + stateUpdates, 7);
+                        fields[field] = `growing-${level}`;
+                        setFieldState(field, `growing-${level}`);
+                    }
+                }
+            }
+        }
+        saveToLocalStorage();
+    }
 }

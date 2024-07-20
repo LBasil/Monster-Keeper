@@ -290,3 +290,8 @@ function showNotification(message) {
         toast.remove();
     });
 }
+
+function resetGame() {
+    localStorage.clear();
+    location.reload();
+}

@@ -30,6 +30,8 @@
                 </ul>
             </div>
             <button class="btn btn-outline-light" onclick="switchLandscape()">Change Landscape</button>
+            <!-- Debug Button -->
+            <button class="btn btn-outline-danger ml-3" onclick="resetGame()">Reset Game</button>
         </nav>
         <div id="screen" class="flex-fill">
             <div id="enclos" class="screen active landscape-1">
@@ -51,8 +53,7 @@
             <div id="options" class="screen landscape-1">Options Content</div>
             <div id="capture" class="screen landscape-1">Capture Content</div>
         </div>
-        <button id="left-arrow" class="arrow" onclick="prevScreen()">&lt;</button>
-        <button id="right-arrow" class="arrow" onclick="nextScreen()">&gt;</button> <!-- Notifications Container -->
+        <!-- Notifications Container -->
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
             <div id="toast-container" class="toast-container"></div>
         </div>

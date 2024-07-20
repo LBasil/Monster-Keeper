@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadFromLocalStorage();
     showScreen('enclos');
     updateAllFieldsState();
-    setInterval(updateFieldsState, 10000); // Update fields state every 10 seconds
+    setInterval(updateFieldsState, 3000); // Update fields state every 3 seconds
 });
 
 const screens = ['enclos', 'ferme', 'options', 'capture'];
@@ -37,17 +37,17 @@ const fieldStates = {
         'field-1': 'empty',
         'field-2': 'non-constructed',
         'field-3': 'growing-1',
-        'field-4': 'seed'
+        'field-4': 'growing-1'
     },
     'landscape-2': {
-        'field-1': 'seed',
+        'field-1': 'growing-1',
         'field-2': 'growing-2',
         'field-3': 'non-constructed',
         'field-4': 'empty'
     },
     'landscape-3': {
         'field-1': 'growing-3',
-        'field-2': 'seed',
+        'field-2': 'growing-1',
         'field-3': 'empty',
         'field-4': 'non-constructed'
     }
@@ -119,14 +119,14 @@ function setFieldState(fieldId, state) {
 function alertEnclosState(enclosId) {
     const enclosElement = document.getElementById(enclosId);
     if (enclosElement) {
-        alert(`L'état de ${enclosId} est : ${enclosElement.className.split(' ')[1]}`);
+        showNotification(`L'état de ${enclosId} est : ${enclosElement.className.split(' ')[1]}`);
     }
 }
 
 function alertFieldState(fieldId) {
     const fieldElement = document.getElementById(fieldId);
     if (fieldElement) {
-        alert(`L'état de ${fieldId} est : ${fieldElement.className.split(' ')[1]}`);
+        showNotification(`L'état de ${fieldId} est : ${fieldElement.className.split(' ')[1]}`);
     }
 }
 
@@ -193,7 +193,7 @@ function handleFieldClick(fieldId) {
         if (inventory.wheatSeeds > 0) {
             inventory.wheatSeeds--;
             plantField(fieldId);
-            alert('Vous avez planté une graine de blé.');
+            showNotification('Vous avez planté une graine de blé.');
         } else {
             alertFieldState(fieldId);
         }
@@ -210,7 +210,7 @@ function harvestField(fieldId) {
     fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'empty'; // Set field state to empty after harvesting
     setFieldState(fieldId, 'empty');
     saveToLocalStorage();
-    alert(`Vous avez récolté ${wheatAmount} blé(s) et ${seedAmount} graine(s) de blé.`);
+    showNotification(`Vous avez récolté ${wheatAmount} blé(s) et ${seedAmount} graine(s) de blé.`);
 }
 
 function plantField(fieldId) {
@@ -260,4 +260,33 @@ function updateAllFieldsState() {
         }
         saveToLocalStorage();
     }
+}
+
+function showNotification(message) {
+    const toastContainer = document.getElementById('toast-container');
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast align-items-center text-white bg-primary border-0';
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+
+    const toastBody = document.createElement('div');
+    toastBody.className = 'd-flex';
+    toastBody.innerHTML = `
+        <div class="toast-body">
+            ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    `;
+
+    toast.appendChild(toastBody);
+    toastContainer.appendChild(toast);
+
+    const bootstrapToast = new bootstrap.Toast(toast, { delay: 3000 });
+    bootstrapToast.show();
+
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
 }

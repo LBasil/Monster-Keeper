@@ -52,7 +52,10 @@
             <div id="capture" class="screen landscape-1">Capture Content</div>
         </div>
         <button id="left-arrow" class="arrow" onclick="prevScreen()">&lt;</button>
-        <button id="right-arrow" class="arrow" onclick="nextScreen()">&gt;</button>
+        <button id="right-arrow" class="arrow" onclick="nextScreen()">&gt;</button> <!-- Notifications Container -->
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="toast-container" class="toast-container"></div>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

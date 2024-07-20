@@ -1,3 +1,6 @@
+/**
+ * Execute function once the DOM is fully loaded
+ */
 document.addEventListener('DOMContentLoaded', (event) => {
     loadFromLocalStorage();
     showScreen('enclos');
@@ -5,12 +8,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     setInterval(updateFieldsState, 3000); // Update fields state every 3 seconds
 });
 
+// Initiate screens and landscape value for new users
 const screens = ['enclos', 'ferme', 'options', 'capture'];
 let currentScreenIndex = 0;
 let currentLandscapeIndex = 0;
 
 const landscapes = ['landscape-1', 'landscape-2', 'landscape-3'];
 
+// Starting eclosureStates
 const enclosureStates = {
     'landscape-1': {
         'enclos-1': 'in-construction',
@@ -32,6 +37,7 @@ const enclosureStates = {
     }
 };
 
+// Starting fieldStates
 const fieldStates = {
     'landscape-1': {
         'field-1': 'empty',
@@ -53,11 +59,16 @@ const fieldStates = {
     }
 };
 
+// Starting inventory
 let inventory = {
     'wheatSeeds': 5,
     'wheat': 0
 };
 
+/**
+ * Show a specified screen
+ * @param {String} screen - Contains the id of the screen
+ */
 function showScreen(screen) {
     screens.forEach(s => {
         document.getElementById(s).classList.remove('active');
@@ -65,16 +76,26 @@ function showScreen(screen) {
     document.getElementById(screen).classList.add('active');
 }
 
+/**
+ * Go to the previous screen, if there's none, go to the last screen in the array.
+ */
 function prevScreen() {
     currentScreenIndex = (currentScreenIndex - 1 + screens.length) % screens.length;
     showScreen(screens[currentScreenIndex]);
 }
 
+/**
+ * Go to the next screen, if there's none, go to the first screen in the array.
+ */
 function nextScreen() {
     currentScreenIndex = (currentScreenIndex + 1) % screens.length;
     showScreen(screens[currentScreenIndex]);
 }
 
+/**
+ * Go to the next landscape, if there's none, go to the first landscape in the array.
+ * Update every field and enclos depending of the landscape and current screen.
+ */
 function switchLandscape() {
     currentLandscapeIndex = (currentLandscapeIndex + 1) % landscapes.length;
     const landscape = landscapes[currentLandscapeIndex];
@@ -100,6 +121,11 @@ function switchLandscape() {
     saveToLocalStorage();
 }
 
+/**
+ * Set the new state of an enclos
+ * @param {String} enclosId - Id of the enclos
+ * @param {String} state - New state of the enclos
+ */
 function setEnclosState(enclosId, state) {
     const enclosElement = document.getElementById(enclosId);
     if (enclosElement) {
@@ -108,6 +134,11 @@ function setEnclosState(enclosId, state) {
     }
 }
 
+/**
+ * Set the new state of a field
+ * @param {String} fieldId - Id of the field
+ * @param {String} state - New state of the field
+ */
 function setFieldState(fieldId, state) {
     const fieldElement = document.getElementById(fieldId);
     if (fieldElement) {
@@ -116,6 +147,10 @@ function setFieldState(fieldId, state) {
     }
 }
 
+/**
+ * Show the actual state of an enclos
+ * @param {*} enclosId - Id of the enclos
+ */
 function alertEnclosState(enclosId) {
     const enclosElement = document.getElementById(enclosId);
     if (enclosElement) {
@@ -123,6 +158,10 @@ function alertEnclosState(enclosId) {
     }
 }
 
+/**
+ * Show the actual state of an field
+ * @param {String} fieldId - Id of the field
+ */
 function alertFieldState(fieldId) {
     const fieldElement = document.getElementById(fieldId);
     if (fieldElement) {
@@ -130,11 +169,10 @@ function alertFieldState(fieldId) {
     }
 }
 
+/**
+ * Save data in the localStorage
+ */
 function saveToLocalStorage() {
-    const currentLandscape = landscapes[currentLandscapeIndex];
-    const currentEnclosures = enclosureStates[currentLandscape];
-    const currentFields = fieldStates[currentLandscape];
-
     localStorage.setItem('currentScreenIndex', currentScreenIndex);
     localStorage.setItem('currentLandscapeIndex', currentLandscapeIndex);
     localStorage.setItem('enclosureStates', JSON.stringify(enclosureStates));
@@ -143,6 +181,9 @@ function saveToLocalStorage() {
     localStorage.setItem('lastUpdate', new Date().getTime());
 }
 
+/**
+ * If the player has already played, load date from localStorage
+ */
 function loadFromLocalStorage() {
     if (localStorage.getItem('currentScreenIndex') !== null) {
         currentScreenIndex = parseInt(localStorage.getItem('currentScreenIndex'), 10);
@@ -184,6 +225,10 @@ function loadFromLocalStorage() {
     showScreen(screens[currentScreenIndex]);
 }
 
+/**
+ * Handle field click, check if we need to display the state, harvest or plant
+ * @param {String} fieldId - Id of the field
+ */
 function handleFieldClick(fieldId) {
     const fieldElement = document.getElementById(fieldId);
     const state = fieldElement.className.split(' ')[1];
@@ -202,6 +247,10 @@ function handleFieldClick(fieldId) {
     }
 }
 
+/**
+ * Harvest a field
+ * @param {String} fieldId - Id of the field
+ */
 function harvestField(fieldId) {
     const wheatAmount = Math.floor(Math.random() * 5) + 1; // 1 to 5 wheat
     const seedAmount = Math.floor(Math.random() * 3) + 1; // 1 to 3 seeds
@@ -213,12 +262,19 @@ function harvestField(fieldId) {
     showNotification(`Vous avez récolté ${wheatAmount} blé(s) et ${seedAmount} graine(s) de blé.`);
 }
 
+/**
+ * Planta field
+ * @param {String} fieldId - Id of the field
+ */
 function plantField(fieldId) {
     fieldStates[landscapes[currentLandscapeIndex]][fieldId] = 'growing-1'; // Set field state to growing-1 when planting
     setFieldState(fieldId, 'growing-1');
     saveToLocalStorage();
 }
 
+/**
+ * Update state of the fields
+ */
 function updateFieldsState() {
     const currentLandscape = landscapes[currentLandscapeIndex];
     const currentFields = fieldStates[currentLandscape];
@@ -237,6 +293,9 @@ function updateFieldsState() {
     saveToLocalStorage();
 }
 
+/**
+ * Update the states of the field after the player came back to the screen
+ */
 function updateAllFieldsState() {
     const lastUpdate = localStorage.getItem('lastUpdate');
     if (lastUpdate) {
@@ -262,6 +321,10 @@ function updateAllFieldsState() {
     }
 }
 
+/**
+ * Show a notification
+ * @param {String} message - Message to show
+ */
 function showNotification(message) {
     const toastContainer = document.getElementById('toast-container');
     
@@ -291,6 +354,9 @@ function showNotification(message) {
     });
 }
 
+/**
+ * Clear local storage - Debug menu
+ */
 function resetGame() {
     localStorage.clear();
     location.reload();

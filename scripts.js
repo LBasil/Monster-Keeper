@@ -1,12 +1,42 @@
 /**
  * Execute function once the DOM is fully loaded
  */
+
+var lastIdUsed = 10;
 document.addEventListener('DOMContentLoaded', (event) => {
     loadFromLocalStorage();
     showScreen('enclos');
+    initializeFields(lastIdUsed); // Initialize with 10 fields
     updateAllFieldsState();
     setInterval(updateFieldsState, 3000); // Update fields state every 3 seconds
 });
+
+function initializeFields(numFields) {
+    for (let i = 1; i <= numFields; i++) {
+        addField(`field-${i}`);
+    }
+}
+
+function addField(fieldId) {
+    fieldId = fieldId || lastIdUsed++;
+    const fieldContainer = document.getElementById('field-container');
+    const field = document.createElement('div');
+    const addFielddBtn = document.getElementById('addFieldBtn');
+    field.id = fieldId;
+    field.className = 'field empty'; // Initial state
+    field.onclick = () => handleFieldClick(fieldId);
+    //fieldContainer.appendChild(field);
+    fieldContainer.insertBefore(field, addFielddBtn);
+
+    // Initialize field state in fieldStates if not already present
+    const currentLandscape = landscapes[currentLandscapeIndex];
+    if (!fieldStates[currentLandscape]) {
+        fieldStates[currentLandscape] = {};
+    }
+    if (!fieldStates[currentLandscape][fieldId]) {
+        fieldStates[currentLandscape][fieldId] = 'empty';
+    }
+}
 
 // Initiate screens and landscape value for new users
 const screens = ['enclos', 'ferme', 'options', 'capture'];

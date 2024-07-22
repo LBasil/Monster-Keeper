@@ -9,7 +9,57 @@ document.addEventListener('DOMContentLoaded', (event) => {
     initializeFields(lastIdUsed); // Initialize with 10 fields
     updateAllFieldsState();
     setInterval(updateFieldsState, 3000); // Update fields state every 3 seconds
+    startAnimalSpawning(); // Start spawning animals in the capture area
 });
+
+/**
+ * Start spawning animals in the capture area at regular intervals
+ */
+function startAnimalSpawning() {
+    setInterval(spawnAnimal, 5000); // Spawn an animal every 5 seconds
+}
+
+/**
+ * Spawn an animal at a random position within the capture area
+ */
+function spawnAnimal() {
+    const captureArea = document.getElementById('capture-area');
+    const animal = document.createElement('div');
+    animal.className = 'animal';
+    /*animal.style.backgroundImage = 'url("path/to/animal.png")'; // Replace with the path to your animal image*/
+    // Temp
+    animal.style.backgroundImage = 'red'
+    animal.textContent = 'Animal'
+    animal.style.top = `${Math.random() * (captureArea.clientHeight - 100)}px`;
+    animal.style.left = `${Math.random() * (captureArea.clientWidth - 100)}px`;
+
+    animal.onclick = () => {
+        captureAnimal(animal);
+    };
+
+    captureArea.appendChild(animal);
+    showNotification("Un animal est apparu !");
+
+    setTimeout(() => {
+        if (animal.parentElement) {
+            animal.remove(); // Remove animal if not captured within 10 seconds
+            showNotification("Un animal est partie !");
+        }
+    }, 10000); // 10 seconds before the animal disappears
+}
+
+/**
+ * Handle capturing the animal
+ */
+function captureAnimal(animal) {
+    animal.remove();
+    showNotification('Vous avez capturé un animal !');
+
+    // Add logic to add the captured animal to the player's inventory or enclosures
+    // For example:
+    // inventory.animals.push('animal');
+    // saveToLocalStorage();
+}
 
 function initializeFields(numFields) {
     for (let i = 1; i <= numFields; i++) {

@@ -34,7 +34,7 @@
             <button class="btn btn-outline-danger ml-3" onclick="resetGame()">Reset Game</button>
         </nav>
         <div id="screen" class="flex-fill">
-            <div id="enclos" class="screen active landscape-1">
+            <div id="enclos" class="screen landscape-1">
                 <div class="enclos-container">
                     <div id="enclos-1" class="enclos" onclick="alertEnclosState('enclos-1')"></div>
                     <div id="enclos-2" class="enclos" onclick="alertEnclosState('enclos-2')"></div>
@@ -48,7 +48,9 @@
                 </div>
             </div>
             <div id="options" class="screen landscape-1">Options Content</div>
-            <div id="capture" class="screen landscape-1">Capture Content</div>
+            <div id="capture" class="screen landscape-1">
+                <div id="capture-area"></div>
+            </div>
         </div>
         <!-- Notifications Container -->
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">

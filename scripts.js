@@ -10,7 +10,33 @@ document.addEventListener('DOMContentLoaded', (event) => {
     updateAllFieldsState();
     setInterval(updateFieldsState, 3000); // Update fields state every 3 seconds
     startAnimalSpawning(); // Start spawning animals in the capture area
+    setupInventoryButtonListener();
 });
+
+/**
+ * Setup inventory button
+ */
+
+function setupInventoryButtonListener () {
+    document.getElementById('inventoryButton').addEventListener('click', function() {
+         $('#inventoryModal').modal('show');
+    });
+}
+
+/**
+ * Open/Close the inventory - Show/Hide the modal
+ */
+function handleInventoryClick(shouldOpen) {
+    if (shouldOpen) {
+        shouldOpenInventory = shouldOpen
+    }
+    if (shouldOpenInventory) {
+        $('#inventoryModal').modal('show');
+    } else {
+        $('#inventoryModal').modal('hide');
+    }
+
+}
 
 /**
  * Start spawning animals in the capture area at regular intervals

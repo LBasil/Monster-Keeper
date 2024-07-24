@@ -30,6 +30,7 @@
                 </ul>
             </div>
             <button class="btn btn-outline-light" onclick="switchLandscape()">Change Landscape</button>
+            <button class="btn btn-outline-light" id="inventoryButton">Inventory</button>
             <!-- Debug Button -->
             <button class="btn btn-outline-danger ml-3" onclick="resetGame()">Reset Game</button>
         </nav>
@@ -55,6 +56,26 @@
         <!-- Notifications Container -->
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
             <div id="toast-container" class="toast-container"></div>
+        </div>
+        <!-- Modal Inventaire -->
+        <div class="modal fade" id="inventoryModal" tabindex="-1" role="dialog" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content inventory-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inventoryModalLabel">Inventaire</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Contenu de l'inventaire -->
+                        <p>Votre inventaire est vide pour l'instant.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

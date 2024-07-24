@@ -1,65 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monster Keeper</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Monster Keeper - Connexion</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: #282c34;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .login-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-form {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .login-form h1 {
+            color: #ffa726;
+            margin-bottom: 20px;
+        }
+        .btn-custom {
+            background-color: #ffa726;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #ff9800;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <button class="nav-link btn btn-link" onclick="showScreen('enclos')">Enclos</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link btn btn-link" onclick="showScreen('ferme')">Ferme</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link btn btn-link" onclick="showScreen('options')">Options</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link btn btn-link" onclick="showScreen('capture')">Capture</button>
-                    </li>
-                </ul>
-            </div>
-            <button class="btn btn-outline-light" onclick="switchLandscape()">Change Landscape</button>
-            <!-- Debug Button -->
-            <button class="btn btn-outline-danger ml-3" onclick="resetGame()">Reset Game</button>
-        </nav>
-        <div id="screen" class="flex-fill">
-            <div id="enclos" class="screen landscape-1">
-                <div class="enclos-container">
-                    <div id="enclos-1" class="enclos" onclick="alertEnclosState('enclos-1')"></div>
-                    <div id="enclos-2" class="enclos" onclick="alertEnclosState('enclos-2')"></div>
-                    <div id="enclos-3" class="enclos" onclick="alertEnclosState('enclos-3')"></div>
-                    <div id="enclos-4" class="enclos" onclick="alertEnclosState('enclos-4')"></div>
+    <div class="container login-container">
+        <div class="login-form">
+            <h1>Monster Keeper</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email :</label>
+                    <input type="email" class="form-control" id="email"> <!-- required -->
                 </div>
-            </div>
-            <div id="ferme" class="screen landscape-1">
-                <div class="field-container" id="field-container">
-                    <button id="addFieldBtn" class="btn btn-link" onclick="addField()">Add field</button>
+                <div class="form-group">
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" class="form-control" id="password"> <!-- required -->
                 </div>
-            </div>
-            <div id="options" class="screen landscape-1">Options Content</div>
-            <div id="capture" class="screen landscape-1">
-                <div id="capture-area"></div>
-            </div>
-        </div>
-        <!-- Notifications Container -->
-        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-            <div id="toast-container" class="toast-container"></div>
+                <button type="submit" class="btn btn-custom btn-block">Se connecter</button>
+            </form>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="scripts.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Pas de vérification pour l'instant
+            window.location.href = 'game.html';
+        });
+    </script>
 </body>
 </html>
